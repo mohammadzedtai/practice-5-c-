@@ -4,213 +4,193 @@
 #include <stdexcept>
 using namespace std;
 
-class LibraryItem
-{
-private:
+class LibraryItem {
+protected:
     string title;
-    string author;
+    string creator;
     string dueDate;
 
 public:
-    LibraryItem(string t = "", string a = "", string d = "")
-        : title(t), author(a), dueDate(d) {}
+    LibraryItem(string t = "", string c = "", string d = "")
+        : title(t), creator(c), dueDate(d) {}
 
     virtual ~LibraryItem() {}
 
     string getTitle() const { return title; }
-    string getAuthor() const { return author; }
+    string getCreator() const { return creator; }
     string getDueDate() const { return dueDate; }
 
-    void setTitle(string newTitle) { title = newTitle; }
-    void setAuthor(string newAuthor) { author = newAuthor; }
-    void setDueDate(string newDueDate) { dueDate = newDueDate; }
+    void setTitle(const string &t) { title = t; }
+    void setCreator(const string &c) { creator = c; }
+    void setDueDate(const string &d) { dueDate = d; }
 
     virtual void checkOut() = 0;
     virtual void returnItem() = 0;
-    virtual void displayDetails() const = 0;
+    virtual void showDetails() const = 0;
 };
 
-class Book : public LibraryItem
-{
+class Book : public LibraryItem {
 private:
-    string ISBN;
+    string isbn;
 
 public:
-    Book(string t, string a, string d, string isbn)
-        : LibraryItem(t, a, d), ISBN(isbn) {}
+    Book(string t, string a, string d, string i)
+        : LibraryItem(t, a, d), isbn(i) {}
 
-    void checkOut() override
-    {
-        cout << "Book '" << getTitle() << "' checked out successfully!\n";
+    void checkOut() override {
+        cout << "✔️ Book \"" << title << "\" issued successfully.\n";
     }
 
-    void returnItem() override
-    {
-        cout << "Book '" << getTitle() << "' returned successfully!\n";
+    void returnItem() override {
+        cout << "↩️ Book \"" << title << "\" returned successfully.\n";
     }
 
-    void displayDetails() const override
-    {
-        cout << "\n[Book Details]\n";
-        cout << "Title: " << getTitle() << "\nAuthor: " << getAuthor()
-             << "\nDue Date: " << getDueDate()
-             << "\nISBN: " << ISBN << "\n";
+    void showDetails() const override {
+        cout << "\n📘 Book Info:\n";
+        cout << "Title: " << title
+             << "\nAuthor: " << creator
+             << "\nDue Date: " << dueDate
+             << "\nISBN: " << isbn << "\n";
     }
 };
 
-class DVD : public LibraryItem
-{
+class DVD : public LibraryItem {
 private:
     int duration;
 
 public:
-    DVD(string t, string a, string d, int dur)
-        : LibraryItem(t, a, d), duration(dur)
-    {
+    DVD(string t, string dir, string d, int dur)
+        : LibraryItem(t, dir, d), duration(dur) {
         if (dur <= 0)
-            throw invalid_argument("Duration cannot be negative or zero!");
+            throw invalid_argument("Duration must be greater than 0.");
     }
 
-    void checkOut() override
-    {
-        cout << "DVD '" << getTitle() << "' checked out successfully!\n";
+    void checkOut() override {
+        cout << "✔️ DVD \"" << title << "\" issued successfully.\n";
     }
 
-    void returnItem() override
-    {
-        cout << "DVD '" << getTitle() << "' returned successfully!\n";
+    void returnItem() override {
+        cout << "↩️ DVD \"" << title << "\" returned successfully.\n";
     }
 
-    void displayDetails() const override
-    {
-        cout << "\n[DVD Details]\n";
-        cout << "Title: " << getTitle() << "\nDirector: " << getAuthor()
-             << "\nDue Date: " << getDueDate()
-             << "\nDuration: " << duration << " minutes\n";
+    void showDetails() const override {
+        cout << "\n💿 DVD Info:\n";
+        cout << "Title: " << title
+             << "\nDirector: " << creator
+             << "\nDue Date: " << dueDate
+             << "\nDuration: " << duration << " mins\n";
     }
 };
 
-class Magazine : public LibraryItem
-{
+class Magazine : public LibraryItem {
 private:
-    int issueNumber;
+    int issueNo;
 
 public:
-    Magazine(string t, string a, string d, int issue)
-        : LibraryItem(t, a, d), issueNumber(issue)
-    {
+    Magazine(string t, string e, string d, int issue)
+        : LibraryItem(t, e, d), issueNo(issue) {
         if (issue <= 0)
-            throw invalid_argument("Issue number must be positive!");
+            throw invalid_argument("Issue number must be positive.");
     }
 
-    void checkOut() override
-    {
-        cout << "Magazine '" << getTitle() << "' checked out successfully!\n";
+    void checkOut() override {
+        cout << "✔️ Magazine \"" << title << "\" issued successfully.\n";
     }
 
-    void returnItem() override
-    {
-        cout << "Magazine '" << getTitle() << "' returned successfully!\n";
+    void returnItem() override {
+        cout << "↩️ Magazine \"" << title << "\" returned successfully.\n";
     }
 
-    void displayDetails() const override
-    {
-        cout << "\n[Magazine Details]\n";
-        cout << "Title: " << getTitle() << "\nEditor: " << getAuthor()
-             << "\nDue Date: " << getDueDate()
-             << "\nIssue Number: " << issueNumber << "\n";
+    void showDetails() const override {
+        cout << "\n📰 Magazine Info:\n";
+        cout << "Title: " << title
+             << "\nEditor: " << creator
+             << "\nDue Date: " << dueDate
+             << "\nIssue No: " << issueNo << "\n";
     }
 };
 
-int main()
-{
-    vector<LibraryItem *> libraryItems;
+void getLineInput(const string &label, string &input) {
+    cout << label;
+    getline(cin, input);
+}
+
+int main() {
+    vector<LibraryItem *> items;
     int choice;
 
-    try
-    {
-        do
-        {
-            cout << "\n===== Library Management System =====\n";
-            cout << "1. Add Book\n";
-            cout << "2. Add DVD\n";
-            cout << "3. Add Magazine\n";
-            cout << "4. Display All Items\n";
-            cout << "5. Check Out Item\n";
-            cout << "6. Return Item\n";
-            cout << "7. Exit\n";
-            cout << "Enter your choice: ";
-            cin >> choice;
+    cout << "\n====== Welcome to Library System ======\n";
 
-            if (cin.fail())
-            {
-                throw runtime_error("Invalid input! Please enter a number.");
-            }
+    do {
+        cout << "\n1. Add Book"
+             << "\n2. Add DVD"
+             << "\n3. Add Magazine"
+             << "\n4. Show All Items"
+             << "\n5. Check Out Item"
+             << "\n6. Return Item"
+             << "\n7. Exit"
+             << "\n----------------------------------------\n"
+             << "Enter your choice: ";
 
-            if (choice == 1)
-            {
-                string title, author, dueDate, isbn;
-                cout << "Enter title: ";
-                cin.ignore();
-                getline(cin, title);
-                cout << "Enter author: ";
-                getline(cin, author);
-                cout << "Enter due date: ";
-                getline(cin, dueDate);
-                cout << "Enter ISBN: ";
-                getline(cin, isbn);
-                libraryItems.push_back(new Book(title, author, dueDate, isbn));
-                cout << "Book added successfully!\n";
+        if (!(cin >> choice)) {
+            cout << "⚠️ Invalid input! Please enter a number.\n";
+            cin.clear();
+            cin.ignore(1000, '\n');
+            continue;
+        }
+
+        cin.ignore(); 
+
+        try {
+            if (choice == 1) {
+                string t, a, d, i;
+                getLineInput("Enter book title: ", t);
+                getLineInput("Enter author: ", a);
+                getLineInput("Enter due date: ", d);
+                getLineInput("Enter ISBN: ", i);
+                items.push_back(new Book(t, a, d, i));
+                cout << "✅ Book added successfully.\n";
             }
-            else if (choice == 2)
-            {
-                string title, author, dueDate;
-                int duration;
-                cout << "Enter title: ";
+            else if (choice == 2) {
+                string t, dir, d;
+                int dur;
+                getLineInput("Enter DVD title: ", t);
+                getLineInput("Enter director: ", dir);
+                getLineInput("Enter due date: ", d);
+                cout << "Enter duration (in minutes): ";
+                cin >> dur;
                 cin.ignore();
-                getline(cin, title);
-                cout << "Enter director: ";
-                getline(cin, author);
-                cout << "Enter due date: ";
-                getline(cin, dueDate);
-                cout << "Enter duration (minutes): ";
-                cin >> duration;
-                libraryItems.push_back(new DVD(title, author, dueDate, duration));
-                cout << "DVD added successfully!\n";
+                items.push_back(new DVD(t, dir, d, dur));
+                cout << "✅ DVD added successfully.\n";
             }
-            else if (choice == 3)
-            {
-                string title, author, dueDate;
+            else if (choice == 3) {
+                string t, e, d;
                 int issue;
-                cout << "Enter title: ";
-                cin.ignore();
-                getline(cin, title);
-                cout << "Enter editor: ";
-                getline(cin, author);
-                cout << "Enter due date: ";
-                getline(cin, dueDate);
+                getLineInput("Enter magazine title: ", t);
+                getLineInput("Enter editor: ", e);
+                getLineInput("Enter due date: ", d);
                 cout << "Enter issue number: ";
                 cin >> issue;
-                libraryItems.push_back(new Magazine(title, author, dueDate, issue));
-                cout << "Magazine added successfully!\n";
-            }
-            else if (choice == 4)
-            {
-                cout << "\n--- Library Items ---\n";
-                for (auto item : libraryItems)
-                    item->displayDetails();
-            }
-            else if (choice == 5 || choice == 6)
-            {
-                string title;
-                cout << "Enter title of item: ";
                 cin.ignore();
-                getline(cin, title);
+                items.push_back(new Magazine(t, e, d, issue));
+                cout << "✅ Magazine added successfully.\n";
+            }
+            else if (choice == 4) {
+                if (items.empty()) {
+                    cout << "📂 No items found in the library.\n";
+                } else {
+                    cout << "\n------- Library Collection -------\n";
+                    for (auto item : items)
+                        item->showDetails();
+                }
+            }
+            else if (choice == 5 || choice == 6) {
+                string title;
+                getLineInput("Enter title of the item: ", title);
                 bool found = false;
-                for (auto item : libraryItems)
-                {
-                    if (item->getTitle() == title)
-                    {
+
+                for (auto item : items) {
+                    if (item->getTitle() == title) {
                         found = true;
                         if (choice == 5)
                             item->checkOut();
@@ -219,30 +199,28 @@ int main()
                         break;
                     }
                 }
+
                 if (!found)
-                    cout << "Item not found!\n";
+                    cout << "⚠️ Item not found in the library.\n";
             }
-            else if (choice == 7)
-            {
-                cout << "Exiting system...\n";
+            else if (choice == 7) {
+                cout << "👋 Exiting... Thank you for using the system.\n";
             }
-            else
-            {
-                cout << "Invalid choice. Try again.\n";
+            else {
+                cout << "❌ Invalid choice. Try again.\n";
             }
+        }
+        catch (const exception &ex) {
+            cerr << "Error: " << ex.what() << "\n";
+        }
 
-        } while (choice != 7);
+    } while (choice != 7);
 
-        for (auto item : libraryItems)
-            delete item;
+    for (auto i : items)
+        delete i;
 
-        libraryItems.clear();
-        cout << "All items deleted successfully!\n";
-    }
-    catch (const exception &e)
-    {
-        cerr << "Error: " << e.what() << endl;
-    }
+    items.clear();
+    cout << "🗑️ All resources freed. Goodbye!\n";
 
     return 0;
 }
