@@ -4,7 +4,8 @@
 #include <stdexcept>
 using namespace std;
 
-class LibraryItem {
+class LibraryItem
+{
 protected:
     string title;
     string creator;
@@ -29,7 +30,8 @@ public:
     virtual void showDetails() const = 0;
 };
 
-class Book : public LibraryItem {
+class Book : public LibraryItem
+{
 private:
     string isbn;
 
@@ -37,16 +39,19 @@ public:
     Book(string t, string a, string d, string i)
         : LibraryItem(t, a, d), isbn(i) {}
 
-    void checkOut() override {
-        cout << "✔️ Book \"" << title << "\" issued successfully.\n";
+    void checkOut() override
+    {
+        cout << " Book \"" << title << "\" issued successfully.\n";
     }
 
-    void returnItem() override {
-        cout << "↩️ Book \"" << title << "\" returned successfully.\n";
+    void returnItem() override
+    {
+        cout << " Book \"" << title << "\" returned successfully.\n";
     }
 
-    void showDetails() const override {
-        cout << "\n📘 Book Info:\n";
+    void showDetails() const override
+    {
+        cout << "\n Book Info:\n";
         cout << "Title: " << title
              << "\nAuthor: " << creator
              << "\nDue Date: " << dueDate
@@ -54,27 +59,32 @@ public:
     }
 };
 
-class DVD : public LibraryItem {
+class DVD : public LibraryItem
+{
 private:
     int duration;
 
 public:
     DVD(string t, string dir, string d, int dur)
-        : LibraryItem(t, dir, d), duration(dur) {
+        : LibraryItem(t, dir, d), duration(dur)
+    {
         if (dur <= 0)
             throw invalid_argument("Duration must be greater than 0.");
     }
 
-    void checkOut() override {
-        cout << "✔️ DVD \"" << title << "\" issued successfully.\n";
+    void checkOut() override
+    {
+        cout << " DVD \"" << title << "\" issued successfully.\n";
     }
 
-    void returnItem() override {
-        cout << "↩️ DVD \"" << title << "\" returned successfully.\n";
+    void returnItem() override
+    {
+        cout << " DVD \"" << title << "\" returned successfully.\n";
     }
 
-    void showDetails() const override {
-        cout << "\n💿 DVD Info:\n";
+    void showDetails() const override
+    {
+        cout << "\n DVD Info:\n";
         cout << "Title: " << title
              << "\nDirector: " << creator
              << "\nDue Date: " << dueDate
@@ -82,27 +92,32 @@ public:
     }
 };
 
-class Magazine : public LibraryItem {
+class Magazine : public LibraryItem
+{
 private:
     int issueNo;
 
 public:
     Magazine(string t, string e, string d, int issue)
-        : LibraryItem(t, e, d), issueNo(issue) {
+        : LibraryItem(t, e, d), issueNo(issue)
+    {
         if (issue <= 0)
             throw invalid_argument("Issue number must be positive.");
     }
 
-    void checkOut() override {
-        cout << "✔️ Magazine \"" << title << "\" issued successfully.\n";
+    void checkOut() override
+    {
+        cout << " Magazine \"" << title << "\" issued successfully.\n";
     }
 
-    void returnItem() override {
-        cout << "↩️ Magazine \"" << title << "\" returned successfully.\n";
+    void returnItem() override
+    {
+        cout << " Magazine \"" << title << "\" returned successfully.\n";
     }
 
-    void showDetails() const override {
-        cout << "\n📰 Magazine Info:\n";
+    void showDetails() const override
+    {
+        cout << "\n Magazine Info:\n";
         cout << "Title: " << title
              << "\nEditor: " << creator
              << "\nDue Date: " << dueDate
@@ -110,18 +125,21 @@ public:
     }
 };
 
-void getLineInput(const string &label, string &input) {
+void getLineInput(const string &label, string &input)
+{
     cout << label;
     getline(cin, input);
 }
 
-int main() {
+int main()
+{
     vector<LibraryItem *> items;
     int choice;
 
     cout << "\n====== Welcome to Library System ======\n";
 
-    do {
+    do
+    {
         cout << "\n1. Add Book"
              << "\n2. Add DVD"
              << "\n3. Add Magazine"
@@ -132,26 +150,30 @@ int main() {
              << "\n----------------------------------------\n"
              << "Enter your choice: ";
 
-        if (!(cin >> choice)) {
-            cout << "⚠️ Invalid input! Please enter a number.\n";
+        if (!(cin >> choice))
+        {
+            cout << " Invalid input! Please enter a number.\n";
             cin.clear();
             cin.ignore(1000, '\n');
             continue;
         }
 
-        cin.ignore(); 
+        cin.ignore();
 
-        try {
-            if (choice == 1) {
+        try
+        {
+            if (choice == 1)
+            {
                 string t, a, d, i;
                 getLineInput("Enter book title: ", t);
                 getLineInput("Enter author: ", a);
                 getLineInput("Enter due date: ", d);
                 getLineInput("Enter ISBN: ", i);
                 items.push_back(new Book(t, a, d, i));
-                cout << "✅ Book added successfully.\n";
+                cout << "Book added successfully.\n";
             }
-            else if (choice == 2) {
+            else if (choice == 2)
+            {
                 string t, dir, d;
                 int dur;
                 getLineInput("Enter DVD title: ", t);
@@ -161,9 +183,10 @@ int main() {
                 cin >> dur;
                 cin.ignore();
                 items.push_back(new DVD(t, dir, d, dur));
-                cout << "✅ DVD added successfully.\n";
+                cout << " DVD added successfully.\n";
             }
-            else if (choice == 3) {
+            else if (choice == 3)
+            {
                 string t, e, d;
                 int issue;
                 getLineInput("Enter magazine title: ", t);
@@ -173,24 +196,31 @@ int main() {
                 cin >> issue;
                 cin.ignore();
                 items.push_back(new Magazine(t, e, d, issue));
-                cout << "✅ Magazine added successfully.\n";
+                cout << " Magazine added successfully.\n";
             }
-            else if (choice == 4) {
-                if (items.empty()) {
-                    cout << "📂 No items found in the library.\n";
-                } else {
+            else if (choice == 4)
+            {
+                if (items.empty())
+                {
+                    cout << " No items found in the library.\n";
+                }
+                else
+                {
                     cout << "\n------- Library Collection -------\n";
                     for (auto item : items)
                         item->showDetails();
                 }
             }
-            else if (choice == 5 || choice == 6) {
+            else if (choice == 5 || choice == 6)
+            {
                 string title;
                 getLineInput("Enter title of the item: ", title);
                 bool found = false;
 
-                for (auto item : items) {
-                    if (item->getTitle() == title) {
+                for (auto item : items)
+                {
+                    if (item->getTitle() == title)
+                    {
                         found = true;
                         if (choice == 5)
                             item->checkOut();
@@ -201,16 +231,19 @@ int main() {
                 }
 
                 if (!found)
-                    cout << "⚠️ Item not found in the library.\n";
+                    cout << " Item not found in the library.\n";
             }
-            else if (choice == 7) {
-                cout << "👋 Exiting... Thank you for using the system.\n";
+            else if (choice == 7)
+            {
+                cout << " Exiting... Thank you for using the system.\n";
             }
-            else {
-                cout << "❌ Invalid choice. Try again.\n";
+            else
+            {
+                cout << " Invalid choice. Try again.\n";
             }
         }
-        catch (const exception &ex) {
+        catch (const exception &ex)
+        {
             cerr << "Error: " << ex.what() << "\n";
         }
 
@@ -220,7 +253,7 @@ int main() {
         delete i;
 
     items.clear();
-    cout << "🗑️ All resources freed. Goodbye!\n";
+    cout << " All resources freed. Goodbye!\n";
 
     return 0;
 }
